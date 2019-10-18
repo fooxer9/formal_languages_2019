@@ -26,7 +26,7 @@ public class ParserExample {
 
     private void require(char c) {
         if (!match(c))
-            error("Ожилается " + c);
+            error("Ожидается " + c);
     }
 
     public void parse() {
