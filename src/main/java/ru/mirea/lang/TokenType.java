@@ -6,7 +6,12 @@ public enum TokenType {
     ID ("[a-zA-Z]"),
     NUMBER("[0-9]+"),
     ADD("\\+"),
-    SPACE("[ \t\r\n]+");
+    MUL("\\*"),
+    MINUS("-"),
+    DIV("/"),
+    SPACE("[ \t\r\n]+"),
+    OPEN_BRACKET("\\("),
+    CLOSE_BRACKET("\\)");
 
     final Pattern pattern;
 

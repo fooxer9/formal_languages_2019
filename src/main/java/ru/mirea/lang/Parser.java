@@ -49,12 +49,34 @@ public class Parser {
         error("Ожидается число или переменная");
         return null;
     }
+    public ExprNode mnozh() {
 
-    public ExprNode parse() { // not ready
-        ExprNode e1 = elem();
-        while (pos < tokens.size()) {
-            Token op = require(TokenType.ADD);
-            ExprNode e2 = elem(); // внести в е1
+        if ((match(TokenType.OPEN_BRACKET)) != null)  {
+            ExprNode e = parse();
+            require(TokenType.CLOSE_BRACKET);
+            return e;
+        }
+        else {
+            return elem();
+        }
+    }
+    public ExprNode slag() {
+        ExprNode e1 = mnozh();
+        Token op;
+        while (((op=match(TokenType.MUL)) != null) ||  ((op=match(TokenType.DIV)) != null)) {
+            ExprNode e2 = mnozh();
+            BinOpNode e0 = new BinOpNode(op,e1,e2);
+            e1 = e0;
+        }
+        return e1;
+    }
+
+    public ExprNode parse() { // теперь Expr
+        ExprNode e1 = slag();
+        Token op;
+        //while (pos < tokens.size()) { // exist '+'
+        while (((op = match(TokenType.ADD)) != null) || ((op = match(TokenType.MINUS)) != null))  {
+            ExprNode e2 = slag();
             BinOpNode e0  = new BinOpNode(op, e1, e2);
             e1 = e0;
         }
@@ -69,7 +91,14 @@ public class Parser {
             BinOpNode bon = (BinOpNode) n;
             int l = eval(bon.left);
             int r = eval(bon.right);
-            return l+r;
+            if (bon.op.type == TokenType.ADD)
+                return l+r;
+            else if (bon.op.type == TokenType.MUL)
+                return l*r;
+            else if (bon.op.type == TokenType.DIV)
+                return l/r;
+            else if (bon.op.type == TokenType.MINUS)
+                return l-r;
         } else if (n instanceof VarNode){
             VarNode vn = (VarNode) n;
             return 0;
@@ -78,10 +107,13 @@ public class Parser {
     }
 
     public static void main(String[] args) {
-        String text = "10 + 20";
+        String text = "1 + (2+2)*2 - 4/2";
         Lexer l = new Lexer(text);
         List<Token> tokens = l.lex();
         tokens.removeIf(t -> t.type == TokenType.SPACE);
+        for (Token t: tokens) {
+            System.out.println(t.type + " " + t.text);
+        }
         Parser p = new Parser(tokens);
         int result = eval(p.parse());
         System.out.println(result);
