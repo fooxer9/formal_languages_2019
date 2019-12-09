@@ -1,0 +1,36 @@
+expr: left=slag(op+=('+'|'-')right+=slag)*;
+  slag: left=mnozh(op+=('*'|'/')right+=mnozh)*;
+  mnozh: NUMBER | ID | '(' expr ')';
+  NUMBER: [0-9];
+  ID: [a-zA-Z];
+  ADD: '+';
+  SUB: '-';
+  MUL: '*';
+  DIV: '/';
+
+
+
+
+  Входной язык содержит операторы присваивания (:=) и операторы print, оканчивающиеся символом ;
+  (точка с запятой). В левой части оператора присваивания – идентификатор, в правой части – битовое
+  выражение. Битовые выражения состоят из идентификаторов, шестнадцатеричных чисел, операций or,
+  xor, and, not и круглых скобок. Шестнадцатеричными числами считать последовательность цифр и
+  символов a, b, c, d, e, f, начинающуюся с цифры (например, 89, 45ac, 0abc). Оператор print имеет аргумент
+  – идентификатор переменной.
+
+ java -jar antlr-4.7.2-complete.jar -package ru.mirea.lang.antlr -o src/main/java/ru/mirea/lang/antlr -no-listener Expr.g
+
+
+
+HEXNUM: ([0-9]+[a-fA-F]*[0-9]*);
+ID: ([a-zA-Z][0-9])*;
+SEMICOLON: ';';
+PRINT: 'print';
+ASSIGN: ':=';
+NOT: 'NOT';
+OR :'OR';
+XOR : 'XOR';
+AND : 'AND';
+LPAREN: '(';
+RPAREN: ')';
+
